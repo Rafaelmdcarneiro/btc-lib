@@ -1,0 +1,22 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "2.0.0"
+}
+
+dependencies {
+    implementation project(':bitcoinj-core')
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+sourceCompatibility = 11
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+compileJava {
+    options.compilerArgs.addAll(['--release', '11'])
+    options.compilerArgs << '-Xlint:deprecation'
+}
