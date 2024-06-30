@@ -1,0 +1,40 @@
+import org.gradle.util.GradleVersion
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    // If using Gradle 7, use the compatible protobuf plugin, else use the one that works with oldest supported Gradle
+    boolean isGradle7 = GradleVersion.current().compareTo(GradleVersion.version("7.0")) >= 0
+    def gradleProtobufVersion = isGradle7 ? "0.9.4" : "0.8.10"
+    if (isGradle7) {
+        System.err.println "Warning: Using com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufVersion} because ${GradleVersion.current()}"
+    }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufVersion}"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    group = 'org.bitcoinj'
+
+    // Ensure standard artifacts in all projects are built reproducibly
+
+    tasks.withType(AbstractArchiveTask) {
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+    }
+
+    tasks.withType(Jar) {
+        dirMode = 0755
+        fileMode = 0644
+    }
+
+    tasks.withType(Javadoc) {
+        options.noTimestamp = true
+    }
+}
